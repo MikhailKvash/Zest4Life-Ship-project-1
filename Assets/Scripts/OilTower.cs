@@ -9,12 +9,22 @@ public class OilTower : MonoBehaviour
     
     [SerializeField] private int oil;
     [SerializeField] private int oilMax;
+    [SerializeField] private int oilLevel;
 
     [SerializeField] private GameObject oilDisplay;
 
-    private int _oilSpeed = 1;
-
     public int TowerOil => oil;
+    public int OilTowerLevel
+    {
+        get => oilLevel;
+        set => oilLevel = value;
+    }
+
+    public int OilTowerCapacity
+    {
+        get => oilMax;
+        set => oilMax = value;
+    }
 
     private void Start()
     {
@@ -36,7 +46,7 @@ public class OilTower : MonoBehaviour
         if (oil < oilMax)
         {
             yield return new WaitForSeconds(5);
-            oil += _oilSpeed;
+            oil += oilLevel;
             StartCoroutine(GenerateOil());
         }
     }

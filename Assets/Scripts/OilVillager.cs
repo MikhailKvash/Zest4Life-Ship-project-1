@@ -16,9 +16,22 @@ public class OilVillager : MonoBehaviour
 
     [SerializeField] private GameObject oilDisplay;
     [SerializeField] private int carryingOilMax;
+    [SerializeField] private int speed;
 
     private int _carryingOil;
     private NavMeshAgent _navMeshAgent;
+
+    public int CarrierSpeed
+    {
+        get => speed;
+        set => speed = value;
+    }
+
+    public int CarrierCapacity
+    {
+        get => carryingOilMax;
+        set => carryingOilMax = value;
+    }
 
     private void Awake()
     {
@@ -27,6 +40,7 @@ public class OilVillager : MonoBehaviour
     
     private void Update()
     {
+        GetComponent<NavMeshAgent>().speed = speed;
         oilDisplay.GetComponent<TextMeshProUGUI>().text = "Carrying oil: " + _carryingOil + " / " + carryingOilMax;
         
         if (_carryingOil <= 0 && oilTower.TowerOil > 0)
@@ -43,18 +57,23 @@ public class OilVillager : MonoBehaviour
     {
         if (other.gameObject.CompareTag("OilTower"))
         {
-            if (oilTower.TowerOil > 0)
+            if (oilTower.TowerOil >= carryingOilMax)
             {
-                oilTower.TakeOil(1);
-                _carryingOil += 1;
+                oilTower.TakeOil(carryingOilMax);
+                _carryingOil += carryingOilMax;
+            }
+            else
+            {
+                _carryingOil += oilTower.TowerOil; 
+                oilTower.TakeOil(oilTower.TowerOil);
             }
         }
         if (other.gameObject.CompareTag("Storage"))
         {
             if (_carryingOil > 0)
             {
-                storage.StoreOil(1);
-                _carryingOil -= 1;
+                storage.StoreOil(_carryingOil);
+                _carryingOil = 0;
             }
         }
     }

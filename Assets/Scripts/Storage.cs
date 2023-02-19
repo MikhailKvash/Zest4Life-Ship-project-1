@@ -33,6 +33,12 @@ public class Storage : MonoBehaviour
         set => coins = value;
     }
 
+    public int OilCapacity
+    {
+        get => oilMax;
+        set => oilMax = value;
+    }
+
     private void Start()
     {
         StartCoroutine(StoredResourses());
