@@ -45,7 +45,7 @@ public class TradeMenu : MonoBehaviour
 
     public void BuyOil ()
     {
-        if (storage.StorageCoins > -coinAmount)
+        if (storage.Coins + coinAmount >= 100)
         {
             oilAmount += 1;
             coinAmount -= 100;
@@ -60,7 +60,7 @@ public class TradeMenu : MonoBehaviour
     
     public void SellOil ()
     {
-        if (storage.StorageOil > -oilAmount)
+        if (storage.Oil > -oilAmount)
         {
             oilAmount -= 1;
             coinAmount += 100;
@@ -85,11 +85,11 @@ public class TradeMenu : MonoBehaviour
     {
         if (oilAmount < 0)
         {
-            storage.StorageOil -= -oilAmount;
+            storage.Oil -= -oilAmount;
         }
         if (oilAmount > 0)
         {
-            storage.StorageCoins -= -coinAmount;
+            storage.Coins -= -coinAmount;
         }
         FindObjectOfType<ShipMovement>().FollowPath();
     }

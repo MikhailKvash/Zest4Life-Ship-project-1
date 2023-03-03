@@ -8,19 +8,25 @@ public class OilVillager : MonoBehaviour
 {
     // Takes oil from tower when available and carries it to storage.
     
-    [SerializeField] private Transform storageLocation;
-    [SerializeField] private Transform oilTowerLocation;
+    [SerializeField] private Transform storageEntrance;
+    [SerializeField] private Transform oilTowerEntrance;
+    [SerializeField] private Transform storageFullWaitSpot;
 
     [SerializeField] private Storage storage;
     [SerializeField] private OilTower oilTower;
 
-    [SerializeField] private GameObject oilDisplay;
+    [SerializeField] private GameObject carryingOilDisplay;
+    [SerializeField] private GameObject speedDisplay;
+    [SerializeField] private GameObject oilCapacityDisplay;
+    
     [SerializeField] private int carryingOilMax;
     [SerializeField] private int speed;
 
-    private int _carryingOil;
+    private float _carryingOil;
+    private bool _takeOilOnce;
+    private bool _dropOilOnce;
     private NavMeshAgent _navMeshAgent;
-
+    
     public int CarrierSpeed
     {
         get => speed;
@@ -41,39 +47,62 @@ public class OilVillager : MonoBehaviour
     private void Update()
     {
         GetComponent<NavMeshAgent>().speed = speed;
-        oilDisplay.GetComponent<TextMeshProUGUI>().text = "Carrying oil: " + _carryingOil + " / " + carryingOilMax;
-        
-        if (_carryingOil <= 0 && oilTower.TowerOil > 0)
+        carryingOilDisplay.GetComponent<TextMeshProUGUI>().text = "Carrying oil: " + _carryingOil + " / " + carryingOilMax;
+        speedDisplay.GetComponent<TextMeshProUGUI>().text = "Speed: " + speed;
+        oilCapacityDisplay.GetComponent<TextMeshProUGUI>().text = "Capacity: " + carryingOilMax;
+
+        if (storage.OilFull)
         {
-            _navMeshAgent.destination = oilTowerLocation.position;
+            _navMeshAgent.destination = storageFullWaitSpot.position;
+        }
+        else if (_carryingOil <= 0 && oilTower.Oil > 0)
+        {
+            _navMeshAgent.destination = oilTowerEntrance.position;
         }
         else if (_carryingOil > 0)
         {
-            _navMeshAgent.destination = storageLocation.position;
+            _navMeshAgent.destination = storageEntrance.position;
         }
-    }
-    
-    public void OnCollisionEnter(Collision other)
-    {
-        if (other.gameObject.CompareTag("OilTower"))
+
+        var towerDistance = Vector3.Distance(transform.position, oilTowerEntrance.position);
+        var storageDistance = Vector3.Distance(transform.position, storageEntrance.position);
+            
+        if (towerDistance <= 0.1f && !_takeOilOnce)
         {
-            if (oilTower.TowerOil >= carryingOilMax)
+            if (oilTower.Oil >= carryingOilMax)
             {
                 oilTower.TakeOil(carryingOilMax);
                 _carryingOil += carryingOilMax;
+                _takeOilOnce = true;
+                _dropOilOnce = false;
             }
             else
             {
-                _carryingOil += oilTower.TowerOil; 
-                oilTower.TakeOil(oilTower.TowerOil);
+                _carryingOil += oilTower.Oil; 
+                oilTower.TakeOil(oilTower.Oil);
+                _takeOilOnce = true;
+                _dropOilOnce = false;
             }
         }
-        if (other.gameObject.CompareTag("Storage"))
+
+        if (storageDistance <= 0.1f && !_dropOilOnce)
         {
             if (_carryingOil > 0)
             {
-                storage.StoreOil(_carryingOil);
-                _carryingOil = 0;
+                if (_carryingOil + storage.Oil <= storage.Capacity)
+                {
+                    storage.StoreOil(_carryingOil);
+                    _carryingOil = 0;
+                    _dropOilOnce = true;
+                    _takeOilOnce = false;
+                }
+                else
+                {
+                    _carryingOil -= storage.Capacity - storage.Oil;
+                    storage.StoreOil(storage.Capacity - storage.Oil);
+                    _dropOilOnce = true;
+                    _takeOilOnce = false;
+                }
             }
         }
     }

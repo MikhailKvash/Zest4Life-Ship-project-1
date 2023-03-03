@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -7,20 +8,30 @@ public class OilTower : MonoBehaviour
 {
     // Generates oil automatically, stores it and shows amount in menu.
     
-    [SerializeField] private int oil;
-    [SerializeField] private int oilMax;
+    [SerializeField] private float oil;
+    [SerializeField] private float oilMax;
     [SerializeField] private int oilLevel;
 
     [SerializeField] private GameObject oilDisplay;
+    [SerializeField] private GameObject oilTowerLevelDisplay;
+    [SerializeField] private GameObject oilTowerSpeedDisplay;
+    [SerializeField] private GameObject oilTowerCapacityDisplay;
 
-    public int TowerOil => oil;
-    public int OilTowerLevel
+    [SerializeField] private AudioManager audioManager;
+
+    public float Oil
+    {
+        get => oil;
+        set => oil = value;
+    }
+
+    public int Level
     {
         get => oilLevel;
         set => oilLevel = value;
     }
 
-    public int OilTowerCapacity
+    public float Capacity
     {
         get => oilMax;
         set => oilMax = value;
@@ -34,20 +45,44 @@ public class OilTower : MonoBehaviour
     private void Update()
     {
         oilDisplay.GetComponent<TextMeshProUGUI>().text = "Oil in tower: " + oil + " / " + oilMax;
+        oilTowerLevelDisplay.GetComponent<TextMeshProUGUI>().text = oilLevel + " lvl";
+        oilTowerSpeedDisplay.GetComponent<TextMeshProUGUI>().text = oilLevel + " ед в 5 секунд";
+        oilTowerCapacityDisplay.GetComponent<TextMeshProUGUI>().text = "Capacity: " + oilMax;
     }
 
-    public void TakeOil(int value)
+    public void TakeOil(float value)
     {
         oil -= value;
     }
 
-    private IEnumerator GenerateOil()
+    public void ClickOil()
     {
         if (oil < oilMax)
         {
-            yield return new WaitForSeconds(5);
-            oil += oilLevel;
-            StartCoroutine(GenerateOil());
+            audioManager.Play("ClickOil");
+            oil += 1;
         }
+    }
+
+    private IEnumerator GenerateOil()
+    {
+        yield return new WaitForSeconds(5);
+        if (oil == oilMax)
+        {
+            oil += 0;
+        }
+        
+        if (oil < oilMax)
+        {
+            if (oil + oilLevel > oilMax)
+            {
+                oil += oilMax - oil;
+            }
+            else
+            {
+                oil += oilLevel;
+            }
+        }
+        StartCoroutine(GenerateOil()); 
     }
 }

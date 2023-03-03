@@ -31,20 +31,23 @@ public class ShipMovement : MonoBehaviour
 
     private void Update()
     {
-        if (transform.position == _currentWaypoint[_waypointIndex].position && _waypointIndex<_currentWaypoint.Count-1)
+        var waypointDistance = Vector3.Distance(transform.position, _currentWaypoint[_waypointIndex].position);
+        var dockingDistance = Vector3.Distance(transform.position, dockingPosition.position);
+        
+        if (waypointDistance <= 0.1f && _waypointIndex < _currentWaypoint.Count-1)
         {
             _waypointIndex++;
             _navMeshAgent.destination = _currentWaypoint[_waypointIndex].position;
         }
-        if (transform.position == dockingPosition.position && !_singleDelivery)
+        if (dockingDistance <= 0.1f && !_singleDelivery)
         {
             if (tradeMenu.OilAmount > 0)
             {
-                storage.StorageOil += tradeMenu.OilAmount;
+                storage.Oil += tradeMenu.OilAmount;
             }
             if (tradeMenu.OilAmount < 0)
             {
-                storage.StorageCoins += tradeMenu.ProfitCoins;
+                storage.Coins += tradeMenu.ProfitCoins;
             }
             _singleDelivery = true;
             tradeMenu.ResetTrading();

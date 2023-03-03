@@ -7,37 +7,52 @@ public class Storage : MonoBehaviour
 {
     // Stores resourses and shows amounts in menu.
     
-    [SerializeField] private int oil;
-    [SerializeField] private int oilMax;
+    [SerializeField] private float oil;
     [SerializeField] private int fuel;
-    [SerializeField] private int fuelMax;
     [SerializeField] private int wood;
-    [SerializeField] private int woodMax;
     [SerializeField] private int stone;
-    [SerializeField] private int stoneMax;
     [SerializeField] private int coins;
     [SerializeField] private int gems;
 
-    [SerializeField] private GameObject oilDisplay;
-    [SerializeField] private GameObject coinsDisplay;
+    [SerializeField] private float capacity;
 
-    public int StorageOil
+    [SerializeField] private GameObject fuelDisplay;
+    [SerializeField] private GameObject oilDisplay;
+    [SerializeField] private GameObject stoneDisplay;
+    [SerializeField] private GameObject woodDisplay;
+    [SerializeField] private GameObject coinsDisplay;
+    [SerializeField] private GameObject gemsDisplay;
+    
+    [SerializeField] private GameObject fuelStorageDisplay;
+    [SerializeField] private GameObject oilStorageDisplay;
+    [SerializeField] private GameObject stoneStorageDisplay;
+    [SerializeField] private GameObject woodStorageDisplay;
+    [SerializeField] private GameObject coinsStorageDisplay;
+    [SerializeField] private GameObject gemsStorageDisplay;
+    
+    [SerializeField] private GameObject capacityDisplay;
+
+    private bool _oilCapacityFull;
+
+    public float Oil
     {
         get => oil;
         set => oil = value;
     }
 
-    public int StorageCoins
+    public int Coins
     {
         get => coins;
         set => coins = value;
     }
 
-    public int OilCapacity
+    public float Capacity
     {
-        get => oilMax;
-        set => oilMax = value;
+        get => capacity;
+        set => capacity = value;
     }
+
+    public bool OilFull => _oilCapacityFull;
 
     private void Start()
     {
@@ -46,11 +61,33 @@ public class Storage : MonoBehaviour
     
     private void Update()
     {
-        oilDisplay.GetComponent<TextMeshProUGUI>().text = "Oil in storage: " + oil + " / " + oilMax;
-        coinsDisplay.GetComponent<TextMeshProUGUI>().text = "Coins: " + coins;
+        fuelDisplay.GetComponent<TextMeshProUGUI>().text = fuel.ToString();
+        oilDisplay.GetComponent<TextMeshProUGUI>().text = oil.ToString();
+        stoneDisplay.GetComponent<TextMeshProUGUI>().text = stone.ToString();
+        woodDisplay.GetComponent<TextMeshProUGUI>().text = wood.ToString();
+        coinsDisplay.GetComponent<TextMeshProUGUI>().text = coins.ToString();
+        gemsDisplay.GetComponent<TextMeshProUGUI>().text = gems.ToString();
+        
+        fuelStorageDisplay.GetComponent<TextMeshProUGUI>().text = fuel.ToString();
+        oilStorageDisplay.GetComponent<TextMeshProUGUI>().text = oil.ToString();
+        stoneStorageDisplay.GetComponent<TextMeshProUGUI>().text = stone.ToString();
+        woodStorageDisplay.GetComponent<TextMeshProUGUI>().text = wood.ToString();
+        coinsStorageDisplay.GetComponent<TextMeshProUGUI>().text = coins.ToString();
+        gemsStorageDisplay.GetComponent<TextMeshProUGUI>().text = gems.ToString();
+        
+        capacityDisplay.GetComponent<TextMeshProUGUI>().text = capacity + " ед МАХ";
+
+        if (oil == capacity)
+        {
+            _oilCapacityFull = true;
+        }
+        else
+        {
+            _oilCapacityFull = false;
+        }
     }
     
-    public void StoreOil(int value)
+    public void StoreOil(float value)
     {
         oil += value;
     }

@@ -6,8 +6,9 @@ TagManager:
   tags:
   - OilTower
   - Storage
-  - ShipWaypoint
-  - ShipEntrance
+  - VillagerHouse
+  - MainBuilding
+  - Docks
   layers:
   - Default
   - TransparentFX
@@ -17,9 +18,9 @@ TagManager:
   - UI
   - OilTower
   - Storage
-  - 
-  - 
-  - 
+  - Menu
+  - CloseMenu
+  - Villagers
   - 
   - 
   - 
