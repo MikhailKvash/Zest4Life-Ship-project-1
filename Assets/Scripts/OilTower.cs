@@ -22,7 +22,10 @@ public class OilTower : MonoBehaviour
     public float Oil
     {
         get => oil;
-        set => oil = value;
+        set
+        {
+            oil = (float) Math.Round(value, 1);
+        }
     }
 
     public int Level
@@ -60,7 +63,7 @@ public class OilTower : MonoBehaviour
         if (oil < oilMax)
         {
             audioManager.Play("ClickOil");
-            oil += 1;
+            Oil += 0.1f;
         }
     }
 

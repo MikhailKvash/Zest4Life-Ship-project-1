@@ -1,7 +1,9 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 public class ObjectClicker : MonoBehaviour
 {
@@ -13,14 +15,19 @@ public class ObjectClicker : MonoBehaviour
 
     [SerializeField] private AudioManager audioManager;
 
+    [SerializeField] private OilTower oilTower;
+
     private void Update()
     {
         if(Input.GetMouseButtonDown(0))
         {
+            if (EventSystem.current.IsPointerOverGameObject()) return;
+            if (EventSystem.current.currentSelectedGameObject != null) return;
+            
             RaycastHit hit;
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 
-            if (Physics.Raycast(ray, out hit, 100f))
+            if (Physics.Raycast(ray, out hit, 100f,LayerMask.GetMask("Buildings")))
             {
                 if (hit.collider)
                 {
@@ -34,14 +41,21 @@ public class ObjectClicker : MonoBehaviour
                 }
             }
 
-            if (Physics.Raycast(ray, out hit, 100f, LayerMask.GetMask("CloseMenu")))
+            if (Physics.Raycast(ray, out hit, 100f, LayerMask.GetMask("OilClicker")))
             {
-                Debug.Log("ek");
-                mainBuildingMenu.SetActive(false);
-                villagerHouseMenu.SetActive(false);
-                oilTowerMenu.SetActive(false);
-                docksMenu.SetActive(false);
+                oilTower.ClickOil();
             }
         }
+    }
+
+    public void DisableUI()
+    {
+        audioManager.Play("CloseMenu");
+        
+        mainBuildingMenu.SetActive(false);
+        villagerHouseMenu.SetActive(false);
+        oilTowerMenu.SetActive(false);
+        storageMenu.SetActive(false);
+        docksMenu.SetActive(false);
     }
 }

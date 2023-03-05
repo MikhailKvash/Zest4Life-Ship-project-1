@@ -15,8 +15,7 @@ public class ShipMovement : MonoBehaviour
 
     [SerializeField] private Storage storage;
     [SerializeField] private TradeMenu tradeMenu;
-
-    [SerializeField] private int shipReturnDelayMilliseconds;
+    [SerializeField] private TimeManager timeManager;
 
     private NavMeshAgent _navMeshAgent;
     private List<Transform> _currentWaypoint;
@@ -54,12 +53,11 @@ public class ShipMovement : MonoBehaviour
         }
     }
 
-    public async void FollowPath()
+    public void FollowPath()
     {
         _waypointIndex = 0;
         _navMeshAgent.destination = _currentWaypoint[_waypointIndex].position;
-        await Task.Delay (shipReturnDelayMilliseconds);
-        ReturnToDocks();
+        timeManager.StartShipTimer();
     }
 
     public void ReturnToDocks()
