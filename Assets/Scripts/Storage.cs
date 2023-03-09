@@ -52,6 +52,30 @@ public class Storage : MonoBehaviour
         set => capacity = value;
     }
 
+    public int Fuel
+    {
+        get => fuel;
+        set => fuel = value;
+    }
+
+    public int Wood
+    {
+        get => wood;
+        set => wood = value;
+    }
+
+    public int Stone
+    {
+        get => stone;
+        set => stone = value;
+    }
+
+    public int Gems
+    {
+        get => gems;
+        set => gems = value;
+    }
+
     public bool OilFull => _oilCapacityFull;
 
     private void Start()

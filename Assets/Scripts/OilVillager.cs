@@ -27,16 +27,34 @@ public class OilVillager : MonoBehaviour
     private bool _dropOilOnce;
     private NavMeshAgent _navMeshAgent;
     
-    public int CarrierSpeed
+    public int Speed
     {
         get => speed;
         set => speed = value;
     }
 
-    public int CarrierCapacity
+    public int Capacity
     {
         get => carryingOilMax;
         set => carryingOilMax = value;
+    }
+
+    public float CarryingOil
+    {
+        get => _carryingOil;
+        set => _carryingOil = value;
+    }
+
+    public bool TakeOilOnce
+    {
+        get => _takeOilOnce;
+        set => _takeOilOnce = value;
+    }
+
+    public bool DropOilOnce
+    {
+        get => _dropOilOnce;
+        set => _dropOilOnce = value;
     }
 
     private void Awake()

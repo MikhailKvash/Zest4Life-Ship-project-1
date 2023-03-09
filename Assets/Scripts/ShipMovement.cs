@@ -22,6 +22,18 @@ public class ShipMovement : MonoBehaviour
     private int _waypointIndex;
     private bool _singleDelivery;
 
+    public int WaypointIndex
+    {
+        get => _waypointIndex;
+        set => _waypointIndex = value;
+    }
+
+    public bool SingleDelivery
+    {
+        get => _singleDelivery;
+        set => _singleDelivery = value;
+    }
+
     private void Awake()
     {
         _navMeshAgent = GetComponent<NavMeshAgent>();
@@ -32,7 +44,11 @@ public class ShipMovement : MonoBehaviour
     {
         var waypointDistance = Vector3.Distance(transform.position, _currentWaypoint[_waypointIndex].position);
         var dockingDistance = Vector3.Distance(transform.position, dockingPosition.position);
-        
+
+        if (dockingDistance > 0.3f && tradeMenu.ShipAway && _waypointIndex < _currentWaypoint.Count-1)
+        {
+            _navMeshAgent.destination = _currentWaypoint[_waypointIndex].position;
+        }
         if (waypointDistance <= 0.1f && _waypointIndex < _currentWaypoint.Count-1)
         {
             _waypointIndex++;
@@ -49,6 +65,7 @@ public class ShipMovement : MonoBehaviour
                 storage.Coins += tradeMenu.ProfitCoins;
             }
             _singleDelivery = true;
+            tradeMenu.ShipAway = false;
             tradeMenu.ResetTrading();
         }
     }
@@ -58,6 +75,7 @@ public class ShipMovement : MonoBehaviour
         _waypointIndex = 0;
         _navMeshAgent.destination = _currentWaypoint[_waypointIndex].position;
         timeManager.StartShipTimer();
+        tradeMenu.ShipAway = true;
     }
 
     public void ReturnToDocks()

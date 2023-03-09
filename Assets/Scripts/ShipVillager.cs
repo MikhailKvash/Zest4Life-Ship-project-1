@@ -17,6 +17,12 @@ public class ShipVillager : MonoBehaviour
 
     private bool _singleDelivery;
 
+    public bool SingleDelivery
+    {
+        get => _singleDelivery;
+        set => _singleDelivery = value;
+    }
+
     private void Awake()
     {
         _navMeshAgent = GetComponent<NavMeshAgent>();
